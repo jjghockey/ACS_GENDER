@@ -1,0 +1,35 @@
+'Loop through files in a directory and save each xls/xlsx file as a csv
+Sub save_xls_xlsx_as_csvs()
+    Dim MyFolder As String
+    Dim MyFile As String
+    
+    ' Define the folder with the XLS/XLSX files
+    MyFolder = "\\chi1fls02\TSP\LosAngeles\Admin\007_RProgramming"
+    
+    ' Create a directory object. Each time the object is iterated upon (in the while statement
+    ' below, it returns the value of the next file in the directory that matches the specified critera,
+    ' which is all files ending in .xls in this case (which includes .xlsx files)
+    MyFile = Dir(MyFolder & "\*.xls")
+    
+    ' For each XLS/XLSX file, open it, and save it as a CSV in the same folder. This runs until
+    ' MyFile = "", which happens when all files have been iterated through
+    Do While MyFile <> ""
+    
+        ' Open the workbook
+        Workbooks.Open Filename:=MyFolder & "\" & MyFile
+      
+        
+        ' Turn off pop-up dialogs
+        Application.DisplayAlerts = False
+        ' Save as CSV
+        ActiveWorkbook.SaveAs Filename:=MyFolder & "\" + Replace(Replace(MyFile, ".xlsx", ".csv"), ".XLSX", ".csv"), FileFormat:=xlCSV, CreateBackup:=False
+        ' Mark as saved so it doesn't ask you to confirm
+        ActiveWorkbook.Saved = True
+        ActiveWorkbook.Close
+        Application.DisplayAlerts = True
+        
+        ' Identify the next file in the directory. The way this command works, all you have to do is call
+        ' the 'Dir' command like so
+        MyFile = Dir
+    Loop
+End Sub

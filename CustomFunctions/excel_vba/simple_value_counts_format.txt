@@ -1,0 +1,63 @@
+Sub nci_simple_value_counts_format()
+' ~~~ NCI Custom Functions
+' ~~~ Purpose: Add a total row and percentages column to a simple [n rows] X [2 columns]
+'              value count table
+' ~~~ Author: Jason Blauvelt (jason.blauvelt@navigant.com)
+' ~~~ Last Updated: 9/1/2016
+
+
+' INPUT:  Function must be run when a sheet is active that has a simple [n rows] X [2 columns]
+'         value count table, where the second column has 0 NAs and contains simple integer counts.
+'         This script does NOT currently support tables with any other format or number of columns.
+' OUTPUT: Same sheet, but with a total row, percentages column, and basic formatting.
+
+' Identify bottom right cell
+Set bottomRight = Cells(Cells.Find("*", SearchOrder:=xlByRows, SearchDirection:=xlPrevious).Row, 2)
+
+' Set Sum Formula
+Cells(bottomRight.Row + 1, 1).Value = "Total:"
+Cells(bottomRight.Row + 1, bottomRight.Column).Formula = "=sum($B$2:$B$" & bottomRight.Row & ")"
+Cells(bottomRight.Row + 1, 1).Font.Bold = True
+Cells(bottomRight.Row + 1, bottomRight.Column).Font.Bold = True
+With Range(Cells(bottomRight.Row, 1), Cells(bottomRight.Row, bottomRight.Column))
+    .Borders(xlEdgeBottom).LineStyle = xlContinuous
+    .Borders(xlEdgeBottom).Weight = xlThin
+End With
+
+' Set percentages
+Cells(1, 3).Value = "%"
+For Each c In Range(Cells(2, 3), Cells(bottomRight.Row, 3))
+    c.Formula = "=$B" & c.Row & " / $B$" & bottomRight.Row + 1
+    c.NumberFormat = "0.0%"
+Next c
+    
+' Add commas
+With Columns(2)
+    .Style = "Comma"
+    .NumberFormat = "_(* #,##0.0_);_(* (#,##0.0);_(* ""-""??_);_(@_)"
+    .NumberFormat = "_(* #,##0_);_(* (#,##0);_(* ""-""??_);_(@_)"
+End With
+
+' Format table headers
+With Range("A1:C1")
+    .Borders(xlEdgeBottom).LineStyle = xlContinuous
+    .Borders(xlEdgeBottom).Weight = xlThin
+End With
+
+' Autofit columns
+Columns.AutoFit
+Cells.WrapText = False
+
+' General formatting
+With ActiveSheet.PageSetup
+    ' no zoom, print 1 page wide
+    .Zoom = False
+End With
+
+ActiveWindow.DisplayGridlines = False
+   
+' Select A1 for each sheet after doing all the formatting
+Range("A1").Select
+
+End Sub
+

@@ -1,0 +1,38 @@
+''Open all files and delimit
+Function AlphaNumericOnly(strSource As String) As String
+    Dim i As Integer
+    Dim strResult As String
+
+    For i = 1 To Len(strSource)
+        Select Case Asc(Mid(strSource, i, 1))
+            Case 48 To 57, 65 To 90, 97 To 122: 'include 32 if you want to include space
+                strResult = strResult & Mid(strSource, i, 1)
+        End Select
+    Next
+    AlphaNumericOnly = strResult
+End Function
+
+Sub save_tabs_as_csv()
+
+
+
+'Delimit CSV files
+
+For Each i In ActiveWorkbook.Sheets
+
+    i.Activate
+    tabname = AlphaNumericOnly(i.Name)
+
+    Application.DisplayAlerts = False
+
+    ActiveWorkbook.SaveAs Filename:=ActiveWorkbook.Path & "\" & tabname & ".csv", FileFormat:=xlCSV, CreateBackup:=False
+
+    ActiveWorkbook.Saved = True
+    
+    Application.DisplayAlerts = True
+
+
+Next i
+
+
+End Sub

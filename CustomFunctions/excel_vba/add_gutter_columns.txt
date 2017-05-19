@@ -1,0 +1,18 @@
+Sub add_gutter_columns()
+
+' Identify bottom right cell
+rightmost_col = Cells.Find("*", SearchOrder:=xlByColumns, SearchDirection:=xlPrevious).Column
+
+' For each column except the last, add a column to the right
+pos = 2
+For i = 1 To rightmost_col - 1
+    Columns(pos).Insert Shift:=xlToRight
+    pos = pos + 2
+Next i
+
+' Set the width of each gutter column
+For i = 1 To rightmost_col - 1
+    Columns(i * 2).ColumnWidth = 0.5
+Next i
+
+End Sub

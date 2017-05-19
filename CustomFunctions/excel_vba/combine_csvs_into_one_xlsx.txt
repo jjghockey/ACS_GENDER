@@ -1,0 +1,51 @@
+Sub combine_csvs_into_one_xlsx()
+' ~~~ NCI Custom Functions
+' ~~~ Purpose: Given a folder path, combine CSVs in the folder into a single XLSX with tabs
+'               for each CSV
+' ~~~ Author: Jason Blauvelt (jason.blauvelt@navigant.com)
+' ~~~ Last Updated: 9/1/2016
+
+
+' INPUT: This must be run in a brand new Excel Workbook with a single tab named "Sheet1" (which is the default)
+'       Also, two parameters need to be adjusted:
+'       1. The root folder path - see the line beginning with "MyFolder = "
+'       2. The regex string limiting which files to combine - see the line beginning with "MyFile = ";
+'           you need to adjust "\*.csv" to your desired expression if you want to only include some of
+'           the CSVs in the folder.
+' OUTPUT: A single Excel workbook, but unsaved (you must save it yourself).
+
+Dim MyFolder As String
+Dim MyFile As String
+
+' Identify folder with CSVs - do NOT include closing slash.
+MyFolder = "\\chi1fls02\TSP\LosAngeles\Children's Hospital Los Angeles\Analysis - Damages\4 Employees OT Review\3_Raw Output"
+' Get a listing of files for that folder, based on the regex expression
+MyFile = Dir(MyFolder & "\*.csv")
+
+
+Set curWB = ActiveWorkbook
+' Loop through files, opening each CSV, copying to the combined workbook, and closing it
+Do While MyFile <> ""
+    ' Open CSV
+    Set toAdd = Workbooks.Open(Filename:=MyFolder & "\" & MyFile)
+    ' Copy over
+    Sheets(1).Copy Before:=curWB.Sheets("Sheet1")
+    ' Close CSV
+    toAdd.Close
+    ' Iterate to next file
+    MyFile = Dir
+Loop
+
+' Delete "Sheet1"
+Application.DisplayAlerts = False
+curWB.Sheets("Sheet1").Delete
+Application.DisplayAlerts = True
+
+
+End Sub
+
+
+
+
+
+
