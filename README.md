@@ -10,7 +10,5 @@ https://www.dir.ca.gov/OPRL/CPI/EntireCCPI.PDF
 
 http://mcdc.missouri.edu/websas/geocorr12.html
 
-https://www.bls.gov/soc/
-
 https://www.census.gov/programs-surveys/acs/
 
